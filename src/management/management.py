@@ -53,17 +53,7 @@ class StudentManagementSystem:
 
     def edit_student(self, student_id, new_info):
         """Sửa thông tin sinh viên"""
-        is_valid_id, message = self.student_manager.validate_student_id(new_info.get('student_id'), exclude_id=student_id)
-        if new_info.get('student_id') and not is_valid_id:
-            print(message)
-            return False
-        student = self.student_manager.find_student_by_id(student_id)
-        if student:
-            for key, value in new_info.items():
-                setattr(student, key, value)
-            print("✓ Cập nhật thông tin thành công!")
-        else:
-            print("Không tìm thấy sinh viên!")
+        return self.student_manager.edit_student(student_id, new_info)
 
     def run(self):
         """Hàm chạy chính của chương trình"""

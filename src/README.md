@@ -1,34 +1,72 @@
-# Hệ Thống Quản Lý Sinh Viên và Điểm Số
+# Hệ Thống Quản Lý Sinh Viên
 
-Hệ thống quản lý sinh viên và điểm số là một ứng dụng Python được thiết kế để quản lý thông tin sinh viên, môn học và điểm số trong môi trường giáo dục.
+Hệ thống quản lý sinh viên là một ứng dụng Python cho phép quản lý thông tin sinh viên, môn học, điểm số và báo cáo thống kê.
 
-## Tính năng chính
+## Tính Năng Chính
 
-### 1. Quản lý Sinh viên
-- Thêm, sửa, xóa thông tin sinh viên
-- Tìm kiếm sinh viên theo nhiều tiêu chí
+### 1. Quản Lý Sinh Viên
+- Thêm sinh viên mới với thông tin chi tiết
+- Chỉnh sửa thông tin sinh viên
+- Xóa sinh viên
+- Tìm kiếm sinh viên theo MSSV
 - Hiển thị danh sách sinh viên
-- Tính điểm trung bình (GPA) và xếp loại
-- Sắp xếp danh sách sinh viên
 
-### 2. Quản lý Môn học
-- Thêm, sửa, xóa thông tin môn học
-- Quản lý số tín chỉ
+### 2. Quản Lý Môn Học
+- Thêm môn học mới
+- Chỉnh sửa thông tin môn học
+- Xóa môn học
+- Tìm kiếm môn học theo mã môn
 - Hiển thị danh sách môn học
 
-### 3. Quản lý Điểm số
+### 3. Quản Lý Điểm Số
 - Nhập điểm cho sinh viên
-- Tính điểm tổng kết
-- Xếp loại học lực
-- Xem điểm theo sinh viên hoặc môn học
+- Chỉnh sửa điểm
+- Xóa điểm
+- Tìm kiếm điểm theo MSSV
+- Hiển thị bảng điểm
 
-## Yêu cầu hệ thống
+### 4. Báo Cáo Thống Kê
+- Thống kê điểm trung bình của sinh viên
+- Thống kê điểm trung bình của môn học
+- Thống kê số lượng sinh viên theo khoa
+- Thống kê số lượng sinh viên theo lớp
 
-- Python 3.x
-- Thư viện openpyxl
-- Hệ điều hành: Windows/Linux/MacOS
+## Cấu Trúc Dự Án
 
-## Cài đặt
+```
+src/
+├── models/
+│   ├── student.py
+│   ├── subject.py
+│   └── grade.py
+├── managers/
+│   ├── student_manager.py
+│   ├── subject_manager.py
+│   └── grade_manager.py
+├── management/
+│   ├── management.py
+│   ├── menu_handler.py
+│   └── student_editor.py
+└── main.py
+```
+
+### Giải Thích Các Thành Phần
+
+#### Models
+- Định nghĩa cấu trúc dữ liệu cho sinh viên, môn học và điểm số
+- Chứa các class và thuộc tính cơ bản
+
+#### Managers
+- Xử lý logic nghiệp vụ chính
+- Quản lý thêm, sửa, xóa, tìm kiếm dữ liệu
+- Tương tác với models để thực hiện các thao tác
+
+#### Management
+- `management.py`: Xử lý các chức năng chính của hệ thống
+- `menu_handler.py`: Xử lý giao diện menu và điều hướng
+- `student_editor.py`: Xử lý việc chỉnh sửa thông tin sinh viên
+
+## Cài Đặt
 
 1. Clone repository:
 ```bash
@@ -40,93 +78,24 @@ git clone [repository-url]
 pip install -r requirements.txt
 ```
 
-## Cấu trúc thư mục
-
-```
-project/
-│
-├── src/
-│   ├── core_types/
-│   │   ├── student.py
-│   │   └── subject.py
-│   │
-│   ├── managers/
-│   │   ├── student_manager.py
-│   │   ├── subject_manager.py
-│   │   └── score_manager.py
-│   │
-│   └── management/
-│       ├── management.py
-│       └── menu_handler.py
-│
-├── data/
-│   ├── students.xlsx
-│   ├── subjects.xlsx
-│   └── scores.xlsx
-│
-├── README.md
-└── requirements.txt
-```
-
-## Hướng dẫn sử dụng
+## Sử Dụng
 
 1. Chạy chương trình:
 ```bash
-python main.py
+python src/main.py
 ```
 
-2. Menu chính:
+2. Làm theo hướng dẫn trên menu để:
    - Quản lý sinh viên
-   - Quản lý điểm số
    - Quản lý môn học
-   - Lưu dữ liệu
-   - Thoát chương trình
+   - Quản lý điểm số
+   - Xem báo cáo thống kê
 
-3. Quản lý sinh viên:
-   - Thêm sinh viên mới
-   - Sửa thông tin sinh viên
-   - Xóa sinh viên
-   - Tìm kiếm sinh viên
-   - Hiển thị tất cả sinh viên
-   - Xem điểm trung bình và xếp loại
-   - Sắp xếp danh sách sinh viên
+## Yêu Cầu Hệ Thống
 
-4. Quản lý điểm số:
-   - Nhập điểm cho sinh viên
-   - Sửa điểm sinh viên
-   - Xóa điểm
-   - Xem điểm sinh viên
+- Python 3.8 trở lên
+- Các thư viện Python được liệt kê trong `requirements.txt`
 
-5. Quản lý môn học:
-   - Thêm môn học mới
-   - Sửa thông tin môn học
-   - Xóa môn học
-   - Xem tất cả môn học
+## Đóng Góp
 
-## Quy tắc nhập liệu
-
-### Sinh viên
-- Mã số sinh viên: 8 chữ số
-- Họ tên: Chỉ chứa chữ cái và dấu cách
-- Ngày sinh: Định dạng dd/mm/yyyy
-- Giới tính: Nam hoặc Nữ
-
-### Môn học
-- Mã môn học: Không được trùng lặp
-- Tên môn học: Không được để trống
-- Số tín chỉ: Số nguyên dương
-
-### Điểm số
-- Điểm chuyên cần: 0-10
-- Điểm giữa kỳ: 0-10
-- Điểm cuối kỳ: 0-10
-
-## Lưu ý
-
-- Dữ liệu được lưu tự động vào file Excel
-- Nên sao lưu dữ liệu thường xuyên
-- Kiểm tra kỹ thông tin trước khi nhập
-
-## Đóng góp
-
-Mọi đóng góp đều được hoan nghênh. Vui lòng tạo issue hoặc pull request để đóng góp.
+Mọi đóng góp đều được hoan nghênh! Vui lòng tạo pull request hoặc issue để đóng góp.

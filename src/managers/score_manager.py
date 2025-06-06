@@ -144,7 +144,7 @@ class ScoreManager:
         scores = []
         try:
             workbook = openpyxl.load_workbook(self.scores_file)
-            sheet = workbook.create_sheet(title="Scores") if 'Scores' not in workbook.sheetnames else workbook['Scores']
+            sheet = workbook.active
             header = [cell.value for cell in sheet[1]]
             for row in sheet.iter_rows(min_row=2, values_only=True):
                 if all(row):
@@ -160,7 +160,7 @@ class ScoreManager:
         """Lưu dữ liệu điểm số vào file XLSX"""
         try:
             workbook = openpyxl.Workbook()
-            sheet = workbook.create_sheet(title="Scores")
+            sheet = workbook.active
             header = ['student_id', 'subject_code', 'attendance_score', 'midterm_score', 'final_score', 'total_score', 'grade']
             sheet.append(header)
             for score in self.scores:

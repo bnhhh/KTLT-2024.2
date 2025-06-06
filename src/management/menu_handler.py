@@ -1,6 +1,7 @@
 from src.core_types.student import Student
 from src.managers.score_manager import validate_score, calculate_final_score, get_grade
 from src.core_types.subject import Subject
+from src.management.student_editor import edit_student_info
 
 def run_student_management(system):
     """Hàm chạy menu quản lý sinh viên"""
@@ -34,25 +35,7 @@ def run_student_management(system):
         elif choice == '2':
             print("\n=== SỬA THÔNG TIN SINH VIÊN ===")
             student_id = input("Nhập MSSV cần sửa: ").strip()
-            if student_id:
-                new_info = {}
-                new_name = input(f"Họ tên: ").strip()
-                if new_name: new_info['name'] = new_name
-                new_birth_date = input(f"Ngày sinh (dd/mm/yyyy): ").strip()
-                if new_birth_date: new_info['birth_date'] = new_birth_date
-                new_gender = input(f"Giới tính (Nam/Nữ): ").strip()
-                if new_gender: new_info['gender'] = new_gender.capitalize()
-                new_major = input(f"Ngành học: ").strip()
-                if new_major: new_info['major'] = new_major
-                new_course = input(f"Khóa học: ").strip()
-                if new_course: new_info['course'] = new_course
-                new_faculty = input(f"Khoa viện: ").strip()
-                if new_faculty: new_info['faculty'] = new_faculty
-                new_class = input(f"Lớp: ").strip()
-                if new_class: new_info['class_name'] = new_class
-                system.edit_student(student_id, new_info)
-            else:
-                print("Vui lòng nhập MSSV.")
+            edit_student_info(system, student_id)
         elif choice == '3':
             print("\n=== XÓA SINH VIÊN ===")
             student_id = input("Nhập MSSV cần xóa: ").strip()

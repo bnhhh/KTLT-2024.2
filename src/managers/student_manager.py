@@ -130,29 +130,31 @@ class StudentManager:
                 print(message)
                 return False
 
-        # Kiểm tra tất cả các trường khác
-        for field, value in new_info.items():
-            if value is not None:  # Chỉ kiểm tra các trường đang được cập nhật
+        # Kiểm tra tất cả các trường được cập nhật
+        validations = []
+        for field in ['name', 'gender', 'birth_date', 'course', 'faculty', 'class_name', 'major']:
+            if field in new_info:  # Kiểm tra nếu trường có trong new_info
+                value = new_info[field]
                 if field == 'name':
-                    is_valid, message = self.validate_name(value)
+                    validations.append(self.validate_name(value))
                 elif field == 'gender':
-                    is_valid, message = self.validate_gender(value)
+                    validations.append(self.validate_gender(value))
                 elif field == 'birth_date':
-                    is_valid, message = validate_date(value)
+                    validations.append(validate_date(value))
                 elif field == 'course':
-                    is_valid, message = self.validate_course(value)
+                    validations.append(self.validate_course(value))
                 elif field == 'faculty':
-                    is_valid, message = self.validate_faculty(value)
+                    validations.append(self.validate_faculty(value))
                 elif field == 'class_name':
-                    is_valid, message = self.validate_class_name(value)
+                    validations.append(self.validate_class_name(value))
                 elif field == 'major':
-                    is_valid, message = self.validate_major(value)
-                else:
-                    continue
+                    validations.append(self.validate_major(value))
 
-                if not is_valid:
-                    print(f"Lỗi: {message}")
-                    return False
+        # Kiểm tra nếu có bất kỳ trường nào không hợp lệ
+        for is_valid, message in validations:
+            if not is_valid:
+                print(f"Lỗi: {message}")
+                return False
 
         # Cập nhật thông tin sinh viên
         for key, value in new_info.items():
