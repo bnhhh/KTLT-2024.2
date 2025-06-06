@@ -1,6 +1,5 @@
 from core_types.student import Student
 from datetime import datetime
-import openpyxl
 from utils.file_utils import ExcelFileHandler
 from utils.validation_utils import (
     validate_date, validate_student_id, validate_name, validate_gender,
