@@ -135,7 +135,3 @@ python main.py
 ## Đóng Góp
 
 Mọi đóng góp đều được hoan nghênh. Vui lòng tạo issue hoặc pull request để đóng góp.
-
-## Giấy Phép
-
-Dự án này được phát hành dưới giấy phép MIT.
