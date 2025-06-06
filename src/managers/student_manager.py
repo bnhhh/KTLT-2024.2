@@ -106,6 +106,7 @@ class StudentManager:
                 print(f"Lỗi: {message}")
                 return False
             
+        # Nếu tất cả validation đều thành công, thêm sinh viên
         self.students.append(student)
         print("✓ Thêm sinh viên thành công!")
         return True

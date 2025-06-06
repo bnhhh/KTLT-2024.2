@@ -30,8 +30,7 @@ def run_student_management(system):
             faculty = input("Nhập khoa viện: ").strip()
             class_name = input("Nhập lớp: ").strip()
             student = Student(student_id, name, birth_date, major, gender, course, faculty, class_name)
-            if system.add_student(student):
-                pass # Thêm thành công
+            system.add_student(student)
         elif choice == '2':
             print("\n=== SỬA THÔNG TIN SINH VIÊN ===")
             student_id = input("Nhập MSSV cần sửa: ").strip()
@@ -242,6 +241,10 @@ def run_subject_management(system):
                 print(message)
                 continue
             subject_name = input("Nhập tên môn học: ").strip()
+            is_valid, message = system.subject_manager.validate_subject_name(subject_name)
+            if not is_valid:
+                print(message)
+                continue
             while True:
                 credits_str = input("Nhập số tín chỉ: ").strip()
                 try:

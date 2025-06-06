@@ -46,9 +46,10 @@ class StudentManagementSystem:
         if not is_valid_id:
             print(message)
             return False
-        self.student_manager.add_student(student)
-        print("✓ Thêm sinh viên thành công!")
-        return True
+        if self.student_manager.add_student(student):
+            print("✓ Thêm sinh viên thành công!")
+            return True
+        return False
 
     def edit_student(self, student_id, new_info):
         """Sửa thông tin sinh viên"""
