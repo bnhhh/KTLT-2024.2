@@ -1,6 +1,11 @@
-from src.core_types.student import Student
+from core_types.student import Student
 from datetime import datetime
 import openpyxl
+from utils.file_utils import ExcelFileHandler
+from utils.validation_utils import (
+    validate_date, validate_student_id, validate_name, validate_gender,
+    validate_course, validate_faculty, validate_class_name, validate_major
+)
 
 def validate_date(date_str):
     """Validate ngày sinh"""
@@ -90,14 +95,14 @@ class StudentManager:
         """Thêm sinh viên mới vào hệ thống"""
         # Kiểm tra tính hợp lệ của tất cả các trường
         validations = [
-            self.validate_student_id(student.student_id),
-            self.validate_name(student.name),
-            self.validate_gender(student.gender),
-            (validate_date(student.birth_date)),
-            self.validate_course(student.course),
-            self.validate_faculty(student.faculty),
-            self.validate_class_name(student.class_name),
-            self.validate_major(student.major)
+            validate_student_id(student.student_id, self.students),
+            validate_name(student.name),
+            validate_gender(student.gender),
+            validate_date(student.birth_date),
+            validate_course(student.course),
+            validate_faculty(student.faculty),
+            validate_class_name(student.class_name),
+            validate_major(student.major)
         ]
         
         # Kiểm tra nếu có bất kỳ trường nào không hợp lệ
@@ -125,7 +130,7 @@ class StudentManager:
         # Kiểm tra mã số sinh viên mới nếu được cung cấp
         new_student_id = new_info.get('student_id')
         if new_student_id:
-            is_valid_id, message = self.validate_student_id(new_student_id, exclude_id=student_id)
+            is_valid_id, message = validate_student_id(new_student_id, self.students, exclude_id=student_id)
             if not is_valid_id:
                 print(message)
                 return False
@@ -136,19 +141,19 @@ class StudentManager:
             if field in new_info:  # Kiểm tra nếu trường có trong new_info
                 value = new_info[field]
                 if field == 'name':
-                    validations.append(self.validate_name(value))
+                    validations.append(validate_name(value))
                 elif field == 'gender':
-                    validations.append(self.validate_gender(value))
+                    validations.append(validate_gender(value))
                 elif field == 'birth_date':
                     validations.append(validate_date(value))
                 elif field == 'course':
-                    validations.append(self.validate_course(value))
+                    validations.append(validate_course(value))
                 elif field == 'faculty':
-                    validations.append(self.validate_faculty(value))
+                    validations.append(validate_faculty(value))
                 elif field == 'class_name':
-                    validations.append(self.validate_class_name(value))
+                    validations.append(validate_class_name(value))
                 elif field == 'major':
-                    validations.append(self.validate_major(value))
+                    validations.append(validate_major(value))
 
         # Kiểm tra nếu có bất kỳ trường nào không hợp lệ
         for is_valid, message in validations:
@@ -207,75 +212,60 @@ class StudentManager:
 
     def display_student_info(self, student):
         """Hiển thị thông tin chi tiết của một sinh viên"""
+        print("\n" + "="*50)
         print(f"MSSV: {student.student_id}")
         print(f"Họ tên: {student.name}")
-        print(f"Ngày sinh: {student.birth_date}")
         print(f"Giới tính: {student.gender}")
+        print(f"Ngày sinh: {student.birth_date}")
         print(f"Khóa học: {student.course}")
         print(f"Khoa viện: {student.faculty}")
         print(f"Lớp: {student.class_name}")
         print(f"Ngành học: {student.major}")
+        print("="*50)
 
     def display_all_students(self, show_gpa=False):
         """Hiển thị danh sách tất cả sinh viên"""
         if not self.students:
-            print("Không có sinh viên nào trong hệ thống")
+            print("Không có sinh viên nào trong hệ thống.")
             return
-        print(f"\n{'='*140}")
-        print(f"{'DANH SÁCH SINH VIÊN':^140}")
-        print(f"{'='*140}")
-        header = "{:<10} {:<25} {:<12} {:<20} {:<8} {:<15} {:<20} {:<10}".format('Mã SV', 'Họ tên', 'Ngày sinh', 'Ngành', 'Giới tính', 'Khóa học', 'Khoa viện', 'Lớp')
+            
+        print("\n" + "="*100)
         if show_gpa:
-            header += " {:<10} {:<5}".format('GPA', 'Loại')
-        print(header)
-        print(f"{'-'*140}")
+            print("{:<10} {:<25} {:<10} {:<15} {:<15} {:<10}".format(
+                "MSSV", "Họ tên", "Giới tính", "Khóa học", "Khoa viện", "GPA"))
+        else:
+            print("{:<10} {:<25} {:<10} {:<15} {:<15}".format(
+                "MSSV", "Họ tên", "Giới tính", "Khóa học", "Khoa viện"))
+        print("="*100)
+        
         for student in self.students:
-            row = "{:<10} {:<25} {:<12} {:<20} {:<8} {:<15} {:<20} {:<10}".format(student.student_id, student.name, student.birth_date, student.major, student.gender, student.course, student.faculty, student.class_name)
             if show_gpa:
-                row += " {:<10.2f} {:<5}".format(student.gpa, student.grade)
-            print(row)
+                print("{:<10} {:<25} {:<10} {:<15} {:<15} {:<10.2f}".format(
+                    student.student_id, student.name, student.gender,
+                    student.course, student.faculty, student.gpa))
+            else:
+                print("{:<10} {:<25} {:<10} {:<15} {:<15}".format(
+                    student.student_id, student.name, student.gender,
+                    student.course, student.faculty))
+        print("="*100)
 
     def load_students_from_excel(self):
         """Đọc dữ liệu sinh viên từ file Excel"""
-        students = []
-        try:
-            workbook = openpyxl.load_workbook(self.students_file)
-            sheet = workbook.active
-            header = [cell.value for cell in sheet[1]]
-            for row in sheet.iter_rows(min_row=2, values_only=True):
-                if all(row):  # Kiểm tra nếu hàng không chứa giá trị None
-                    students.append(Student.from_dict(dict(zip(header, row))))
-            print("✓ Tải dữ liệu sinh viên thành công!")
-        except FileNotFoundError:
-            print(f"Không tìm thấy file sinh viên XLSX: {self.students_file}")
-        except Exception as e:
-            print(f"Lỗi khi đọc file sinh viên XLSX: {e}")
-        self.students = students
+        self.students = ExcelFileHandler.load_from_excel(self.students_file, Student)
 
     def save_students_to_excel(self):
         """Lưu dữ liệu sinh viên vào file Excel"""
-        try:
-            workbook = openpyxl.Workbook()
-            sheet = workbook.active
-            header = ['student_id', 'name', 'birth_date', 'gender', 'course', 'faculty', 'class_name', 'major']
-            sheet.append(header)
-            for student in self.students:
-                sheet.append([student.student_id, student.name, student.birth_date, student.gender, student.course, student.faculty, student.class_name, student.major])
-            workbook.save(self.students_file)
-            print("✓ Lưu dữ liệu sinh viên thành công!")
-            return True
-        except Exception as e:
-            print(f"Lỗi khi lưu file sinh viên XLSX: {e}")
-            return False
+        headers = ['student_id', 'name', 'gender', 'birth_date', 'course', 'faculty', 'class_name', 'major']
+        return ExcelFileHandler.save_to_excel(self.students_file, self.students, headers)
 
     def sort_by_name(self):
-        """Sắp xếp danh sách sinh viên theo tên"""
-        self.students.sort(key=lambda student: student.name)
+        """Sắp xếp sinh viên theo tên"""
+        self.students.sort(key=lambda x: x.name.lower())
 
     def sort_by_gpa(self):
-        """Sắp xếp danh sách sinh viên theo điểm GPA"""
-        self.students.sort(key=lambda student: student.gpa, reverse=True)
+        """Sắp xếp sinh viên theo GPA"""
+        self.students.sort(key=lambda x: x.gpa, reverse=True)
 
     def sort_by_id(self):
-        """Sắp xếp danh sách sinh viên theo mã số sinh viên"""
-        self.students.sort(key=lambda student: student.student_id)
+        """Sắp xếp sinh viên theo MSSV"""
+        self.students.sort(key=lambda x: str(x.student_id))

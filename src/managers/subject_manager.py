@@ -1,36 +1,11 @@
-from src.core_types.subject import Subject
-import openpyxl
+from core_types.subject import Subject
+from utils.file_utils import ExcelFileHandler
+from utils.validation_utils import validate_subject_code, validate_subject_name, validate_credits
 
 class SubjectManager:
     def __init__(self, subjects_data=None, subjects_file="subjects.xlsx"):
         self.subjects = subjects_data if subjects_data is not None else []
         self.subjects_file = subjects_file
-
-    def validate_subject_code(self, subject_code):
-        """Kiểm tra tính hợp lệ của mã môn học"""
-        if not subject_code or not subject_code.strip():
-            return False, "Mã môn học không được để trống"
-        if self.find_subject_by_code(subject_code):
-            return False, "Mã môn học đã tồn tại"
-        return True, ""
-
-    def validate_subject_name(self, subject_name):
-        """Kiểm tra tính hợp lệ của tên môn học"""
-        if not subject_name or not subject_name.strip():
-            return False, "Tên môn học không được để trống"
-        return True, ""
-
-    def validate_credits(self, credits_str):
-        """Kiểm tra tính hợp lệ của số tín chỉ"""
-        if not credits_str or not credits_str.strip():
-            return False, "Số tín chỉ không được để trống"
-        try:
-            credits = int(credits_str)
-            if credits <= 0:
-                return False, "Số tín chỉ phải là số nguyên dương"
-            return True, ""
-        except ValueError:
-            return False, "Số tín chỉ phải là số nguyên"
 
     def find_subject_by_code(self, subject_code):
         """Tìm kiếm môn học theo mã môn học"""
@@ -44,9 +19,9 @@ class SubjectManager:
         try:
             # Kiểm tra tính hợp lệ của tất cả các trường
             validations = [
-                self.validate_subject_code(subject.subject_code),
-                self.validate_subject_name(subject.subject_name),
-                self.validate_credits(str(subject.credits))
+                validate_subject_code(subject.subject_code, self.subjects),
+                validate_subject_name(subject.subject_name),
+                validate_credits(str(subject.credits))
             ]
             
             # Kiểm tra nếu có bất kỳ trường nào không hợp lệ
@@ -72,14 +47,14 @@ class SubjectManager:
         try:
             # Kiểm tra các trường mới nếu được cung cấp
             if 'subject_name' in new_info:
-                is_valid, message = self.validate_subject_name(new_info['subject_name'])
+                is_valid, message = validate_subject_name(new_info['subject_name'])
                 if not is_valid:
                     print(f"Lỗi: {message}")
                     return False
                 subject.subject_name = new_info['subject_name'].strip()
 
             if 'credits' in new_info:
-                is_valid, message = self.validate_credits(str(new_info['credits']))
+                is_valid, message = validate_credits(str(new_info['credits']))
                 if not is_valid:
                     print(f"Lỗi: {message}")
                     return False
@@ -116,38 +91,9 @@ class SubjectManager:
 
     def load_subjects_from_excel(self):
         """Đọc dữ liệu môn học từ file Excel"""
-        subjects = []
-        try:
-            workbook = openpyxl.load_workbook(self.subjects_file)
-            sheet = workbook.active
-            header = [cell.value for cell in sheet[1]]
-            for row in sheet.iter_rows(min_row=2, values_only=True):
-                if all(row):
-                    try:
-                        subject_data = dict(zip(header, row))
-                        subjects.append(Subject.from_dict(subject_data))
-                    except ValueError as e:
-                        print(f"Lỗi dữ liệu môn học: {str(e)}")
-                        continue
-            print("✓ Tải dữ liệu môn học thành công!")
-        except FileNotFoundError:
-            print(f"Không tìm thấy file môn học: {self.subjects_file}")
-        except Exception as e:
-            print(f"Lỗi khi đọc file môn học: {e}")
-        self.subjects = subjects
+        self.subjects = ExcelFileHandler.load_from_excel(self.subjects_file, Subject)
 
     def save_subjects_to_excel(self):
         """Lưu dữ liệu môn học vào file Excel"""
-        try:
-            workbook = openpyxl.Workbook()
-            sheet = workbook.active
-            header = ['subject_code', 'subject_name', 'credits']
-            sheet.append(header)
-            for subject in self.subjects:
-                sheet.append([subject.subject_code, subject.subject_name, subject.credits])
-            workbook.save(self.subjects_file)
-            print("✓ Lưu dữ liệu môn học thành công!")
-            return True
-        except Exception as e:
-            print(f"Lỗi khi lưu file môn học: {e}")
-            return False
+        headers = ['subject_code', 'subject_name', 'credits']
+        return ExcelFileHandler.save_to_excel(self.subjects_file, self.subjects, headers)

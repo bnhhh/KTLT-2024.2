@@ -1,39 +1,6 @@
 import openpyxl
-
-def validate_score(score_str):
-    """Validate điểm số"""
-    try:
-        score = float(score_str)
-        if not (0 <= score <= 10):
-            return False, "Điểm phải từ 0 đến 10"
-        return True, ""
-    except ValueError:
-        return False, "Điểm phải là số"
-
-def calculate_final_score(attendance, midterm, final):
-    """Tính điểm tổng kết"""
-    return 0.5 * (attendance * 0.4 + midterm * 0.6) + 0.5 * final
-
-def get_grade(score):
-    """Xác định xếp loại"""
-    if score >= 9.5:
-        return "A+"
-    elif score >= 8.5:
-        return "A"
-    elif score >= 8.0:
-        return "B+"
-    elif score >= 7.0:
-        return "B"
-    elif score >= 6.5:
-        return "C+"
-    elif score >= 5.5:
-        return "C"
-    elif score >= 5.0:
-        return "D+"
-    elif score >= 4.0:
-        return "D"
-    else:
-        return "F"
+from utils.file_utils import ExcelFileHandler
+from utils.score_utils import validate_score, calculate_final_score, get_grade
 
 class ScoreManager:
     def __init__(self, scores_data=None, scores_file="scores.xlsx"):
@@ -47,7 +14,7 @@ class ScoreManager:
         return True, ""
 
     def find_score_record(self, student_id, subject_code):
-        """Tìm bản ghi điểm"""
+        """Tìm kiếm bản ghi điểm"""
         for score in self.scores:
             if score['student_id'] == student_id and score['subject_code'] == subject_code:
                 return score
@@ -55,16 +22,32 @@ class ScoreManager:
 
     def add_score(self, score_record):
         """Nhập điểm cho sinh viên"""
+        total_score = calculate_final_score(
+            score_record['attendance_score'],
+            score_record['midterm_score'],
+            score_record['final_score']
+        )
+        score_record['total_score'] = round(total_score, 2)
+        score_record['grade'] = get_grade(total_score)
+        
         self.scores.append(score_record)
         print(f"✓ Nhập điểm thành công!")
-        print(f"Điểm tổng kết: {round(score_record['total_score'], 2)}")
+        print(f"Điểm tổng kết: {score_record['total_score']}")
         print(f"Xếp loại: {score_record['grade']}")
 
     def edit_score(self, student_id, subject_code, new_scores):
-        """Sửa điểm sinh viên"""
+        """Cập nhật điểm sinh viên"""
         score_record = self.find_score_record(student_id, subject_code)
         if score_record:
             score_record.update(new_scores)
+            total_score = calculate_final_score(
+                score_record['attendance_score'],
+                score_record['midterm_score'],
+                score_record['final_score']
+            )
+            score_record['total_score'] = round(total_score, 2)
+            score_record['grade'] = get_grade(total_score)
+            
             print("✓ Cập nhật điểm thành công!")
             print(f"Điểm tổng kết mới: {score_record['total_score']}")
             print(f"Xếp loại mới: {score_record['grade']}")
@@ -140,34 +123,10 @@ class ScoreManager:
         print(f"Xếp loại: {score_record['grade']}")
 
     def load_scores_from_excel(self):
-        """Load dữ liệu điểm số từ file XLSX"""
-        scores = []
-        try:
-            workbook = openpyxl.load_workbook(self.scores_file)
-            sheet = workbook.active
-            header = [cell.value for cell in sheet[1]]
-            for row in sheet.iter_rows(min_row=2, values_only=True):
-                if all(row):
-                    scores.append(dict(zip(header, row)))
-            print("✓ Tải dữ liệu điểm số thành công!")
-        except FileNotFoundError:
-            print(f"Không tìm thấy file điểm số XLSX: {self.scores_file}")
-        except Exception as e:
-            print(f"Lỗi khi đọc file điểm số XLSX: {e}")
-        self.scores = scores
+        """Đọc dữ liệu điểm số từ file Excel"""
+        self.scores = ExcelFileHandler.load_from_excel(self.scores_file)
 
     def save_scores_to_excel(self):
-        """Lưu dữ liệu điểm số vào file XLSX"""
-        try:
-            workbook = openpyxl.Workbook()
-            sheet = workbook.active
-            header = ['student_id', 'subject_code', 'attendance_score', 'midterm_score', 'final_score', 'total_score', 'grade']
-            sheet.append(header)
-            for score in self.scores:
-                sheet.append(list(score.values()))
-            workbook.save(self.scores_file)
-            print("✓ Lưu dữ liệu điểm số thành công!")
-            return True
-        except Exception as e:
-            print(f"Lỗi khi lưu file điểm số XLSX: {e}")
-            return False
+        """Lưu dữ liệu điểm số vào file Excel"""
+        headers = ['student_id', 'subject_code', 'attendance_score', 'midterm_score', 'final_score', 'total_score', 'grade']
+        return ExcelFileHandler.save_to_excel(self.scores_file, self.scores, headers)

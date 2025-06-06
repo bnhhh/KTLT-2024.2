@@ -1,7 +1,8 @@
-from src.managers.student_manager import StudentManager
-from src.managers.score_manager import ScoreManager
-from src.managers.subject_manager import SubjectManager
-from src.management.menu_handler import run_student_management, run_score_management, run_subject_management
+from managers.student_manager import StudentManager
+from managers.score_manager import ScoreManager
+from managers.subject_manager import SubjectManager
+from management.menu_handler import run_student_management, run_score_management, run_subject_management
+from utils.menu_utils import MenuHandler
 
 class StudentManagementSystem:
     def __init__(self):
@@ -20,7 +21,7 @@ class StudentManagementSystem:
         for score_data in self.score_manager.scores:
             student_id = score_data['student_id']
             subject_code = score_data['subject_code']
-            score = score_data['total_score'] # Lấy điểm tổng kết
+            score = score_data['total_score']
             student = self.student_manager.find_student_by_id(student_id)
             if student:
                 student.add_score(subject_code, score)
@@ -54,31 +55,3 @@ class StudentManagementSystem:
     def edit_student(self, student_id, new_info):
         """Sửa thông tin sinh viên"""
         return self.student_manager.edit_student(student_id, new_info)
-
-    def run(self):
-        """Hàm chạy chính của chương trình"""
-        while True:
-            print("\n" + "="*60)
-            print("                  HỆ THỐNG QUẢN LÝ SINH VIÊN VÀ ĐIỂM SỐ")
-            print("="*60)
-            print("1. Quản lý sinh viên")
-            print("2. Quản lý điểm số")
-            print("3. Quản lý môn học")
-            print("10. Lưu dữ liệu")
-            print("0. Thoát chương trình")
-            print("="*60)
-            main_choice = input("Chọn menu: ").strip()
-
-            if main_choice == '1':
-                run_student_management(self)
-            elif main_choice == '2':
-                run_score_management(self)
-            elif main_choice == '3':
-                run_subject_management(self)
-            elif main_choice == '10':
-                self.save_data()
-            elif main_choice == '0':
-                print("Cảm ơn đã sử dụng chương trình!")
-                break
-            else:
-                print("Lựa chọn không hợp lệ!")
