@@ -1,4 +1,3 @@
-# student_management.py
 from src.managers.student_manager import StudentManager
 from src.managers.score_manager import ScoreManager
 from src.managers.subject_manager import SubjectManager

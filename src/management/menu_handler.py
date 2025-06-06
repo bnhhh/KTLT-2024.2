@@ -1,4 +1,3 @@
-# menu_handler.py
 from src.core_types.student import Student
 from src.managers.score_manager import validate_score, calculate_final_score, get_grade
 from src.core_types.subject import Subject

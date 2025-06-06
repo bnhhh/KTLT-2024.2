@@ -1,4 +1,3 @@
-# score_manager.py
 import openpyxl
 
 def validate_score(score_str):
