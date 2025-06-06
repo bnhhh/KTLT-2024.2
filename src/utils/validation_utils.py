@@ -31,7 +31,7 @@ def validate_student_id(student_id, existing_students=None, exclude_id=None):
         return False, "MSSV phải là 8 chữ số"
     if existing_students:
         for student in existing_students:
-            if str(student.student_id) == student_id and student_id != exclude_id:
+            if str(student.student_id) == str(student_id) and str(student_id) != str(exclude_id):
                 return False, "MSSV đã tồn tại"
     return True, ""
 

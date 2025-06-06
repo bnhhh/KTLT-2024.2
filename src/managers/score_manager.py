@@ -130,3 +130,10 @@ class ScoreManager:
         """Lưu dữ liệu điểm số vào file Excel"""
         headers = ['student_id', 'subject_code', 'attendance_score', 'midterm_score', 'final_score', 'total_score', 'grade']
         return ExcelFileHandler.save_to_excel(self.scores_file, self.scores, headers)
+
+    def delete_scores_by_subject(self, subject_code):
+        """Xóa tất cả điểm của một môn học"""
+        initial_len = len(self.scores)
+        self.scores = [s for s in self.scores if s['subject_code'] != subject_code]
+        if len(self.scores) < initial_len:
+            print(f"Đã xóa tất cả điểm của môn học {subject_code}.")

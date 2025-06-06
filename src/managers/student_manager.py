@@ -1,87 +1,14 @@
 from core_types.student import Student
-from datetime import datetime
 from utils.file_utils import ExcelFileHandler
 from utils.validation_utils import (
     validate_date, validate_student_id, validate_name, validate_gender,
     validate_course, validate_faculty, validate_class_name, validate_major
 )
 
-def validate_date(date_str):
-    """Validate ngày sinh"""
-    if not date_str or not date_str.strip():
-        return False, "Ngày sinh không được để trống"
-    try:
-        datetime.strptime(date_str, "%d/%m/%Y")
-        return True, ""
-    except ValueError:
-        return False, "Ngày sinh phải có định dạng dd/mm/yyyy"
-
-def is_valid_student_id(student_id):
-    if not student_id:  # Kiểm tra nếu student_id là None hoặc rỗng
-        return False
-    return student_id.isdigit() and len(student_id) == 8
-
-def is_valid_name(name):
-    for char in name:
-        if not ('a' <= char <= 'z' or 'A' <= char <= 'Z' or ' ' == char or 'À' <= char <= 'ỹ' or 'á' <= char <= 'ý' or 'Á' <= char <= 'Ý' or char in "ăâđêôơưĂÂĐÊÔƠƯ"):
-            return False
-    return True
-
 class StudentManager:
     def __init__(self, students_data=None, students_file="students.xlsx"):
         self.students = students_data if students_data is not None else []
         self.students_file = students_file
-
-    def validate_student_id(self, student_id, exclude_id=None):
-        """Kiểm tra tính hợp lệ của mã số sinh viên"""
-        if not student_id:
-            return False, "MSSV không được để trống"
-        if not is_valid_student_id(student_id):
-            return False, "MSSV phải là 8 chữ số"
-        for student in self.students:
-            if str(student.student_id) == student_id and student_id != exclude_id:
-                return False, "MSSV đã tồn tại"
-        return True, ""
-
-    def validate_name(self, name):
-        """Kiểm tra tính hợp lệ của họ tên"""
-        if not name or not name.strip():
-            return False, "Họ tên không được để trống"
-        if not is_valid_name(name):
-            return False, "Họ tên không hợp lệ"
-        return True, ""
-
-    def validate_gender(self, gender):
-        """Kiểm tra tính hợp lệ của giới tính"""
-        if not gender or not gender.strip():
-            return False, "Giới tính không được để trống"
-        if gender.lower() not in ['nam', 'nữ']:
-            return False, "Giới tính phải là 'Nam' hoặc 'Nữ'"
-        return True, ""
-
-    def validate_course(self, course):
-        """Kiểm tra tính hợp lệ của khóa học"""
-        if not course or not course.strip():
-            return False, "Khóa học không được để trống"
-        return True, ""
-
-    def validate_faculty(self, faculty):
-        """Kiểm tra tính hợp lệ của khoa viện"""
-        if not faculty or not faculty.strip():
-            return False, "Khoa viện không được để trống"
-        return True, ""
-
-    def validate_class_name(self, class_name):
-        """Kiểm tra tính hợp lệ của lớp"""
-        if not class_name or not class_name.strip():
-            return False, "Lớp không được để trống"
-        return True, ""
-
-    def validate_major(self, major):
-        """Kiểm tra tính hợp lệ của ngành học"""
-        if not major or not major.strip():
-            return False, "Ngành học không được để trống"
-        return True, ""
 
     def find_student_by_id(self, student_id):
         """Tìm kiếm sinh viên theo mã số sinh viên"""
@@ -93,8 +20,13 @@ class StudentManager:
     def add_student(self, student):
         """Thêm sinh viên mới vào hệ thống"""
         # Kiểm tra tính hợp lệ của tất cả các trường
+        is_valid_id, id_message = validate_student_id(student.student_id, existing_students=self.students)
+        if not is_valid_id:
+            print(f"Lỗi: {id_message}")
+            return False
+
+        # Kiểm tra các trường còn lại
         validations = [
-            validate_student_id(student.student_id, self.students),
             validate_name(student.name),
             validate_gender(student.gender),
             validate_date(student.birth_date),
@@ -129,7 +61,7 @@ class StudentManager:
         # Kiểm tra mã số sinh viên mới nếu được cung cấp
         new_student_id = new_info.get('student_id')
         if new_student_id:
-            is_valid_id, message = validate_student_id(new_student_id, self.students, exclude_id=student_id)
+            is_valid_id, message = validate_student_id(new_student_id, existing_students=self.students, exclude_id=student_id)
             if not is_valid_id:
                 print(message)
                 return False
@@ -188,7 +120,7 @@ class StudentManager:
         
         try:
             if search_type == '1':  # Tìm theo MSSV
-                results = [s for s in self.students if keyword in str(s.student_id).lower()]
+                results = [s for s in self.students if keyword == str(s.student_id).lower()]
             elif search_type == '2':  # Tìm theo tên
                 results = [s for s in self.students if keyword in s.name.lower()]
             elif search_type == '3':  # Tìm theo lớp
@@ -230,8 +162,8 @@ class StudentManager:
             
         print("\n" + "="*100)
         if show_gpa:
-            print("{:<10} {:<25} {:<10} {:<15} {:<15} {:<10}".format(
-                "MSSV", "Họ tên", "Giới tính", "Khóa học", "Khoa viện", "GPA"))
+            print("{:<10} {:<25} {:<10} {:<15} {:<15} {:<10} {:<10}".format(
+                "MSSV", "Họ tên", "Giới tính", "Khóa học", "Khoa viện", "GPA", "Xếp loại"))
         else:
             print("{:<10} {:<25} {:<10} {:<15} {:<15}".format(
                 "MSSV", "Họ tên", "Giới tính", "Khóa học", "Khoa viện"))
@@ -239,9 +171,9 @@ class StudentManager:
         
         for student in self.students:
             if show_gpa:
-                print("{:<10} {:<25} {:<10} {:<15} {:<15} {:<10.2f}".format(
+                print("{:<10} {:<25} {:<10} {:<15} {:<15} {:<10.2f} {:<10}".format(
                     student.student_id, student.name, student.gender,
-                    student.course, student.faculty, student.gpa))
+                    student.course, student.faculty, student.gpa, student.grade))
             else:
                 print("{:<10} {:<25} {:<10} {:<15} {:<15}".format(
                     student.student_id, student.name, student.gender,
@@ -258,8 +190,11 @@ class StudentManager:
         return ExcelFileHandler.save_to_excel(self.students_file, self.students, headers)
 
     def sort_by_name(self):
-        """Sắp xếp sinh viên theo tên"""
-        self.students.sort(key=lambda x: x.name.lower())
+        """Sắp xếp sinh viên theo tên (ưu tiên tên gọi, sau đó đến họ và tên đệm)"""
+        def name_key(student):
+            parts = student.name.strip().split()
+            return (parts[-1].lower(), " ".join(parts[:-1]).lower())
+        self.students.sort(key=name_key)
 
     def sort_by_gpa(self):
         """Sắp xếp sinh viên theo GPA"""

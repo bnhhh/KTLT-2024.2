@@ -2,6 +2,7 @@ from core_types.student import Student
 from utils.score_utils import validate_score, calculate_final_score, get_grade
 from core_types.subject import Subject
 from utils.menu_utils import MenuHandler
+from utils.validation_utils import validate_subject_code, validate_subject_name, validate_credits
 
 def edit_student_info(student):
     """Chỉnh sửa thông tin sinh viên"""
@@ -104,7 +105,15 @@ def handle_search_student(system):
     
     results = system.student_manager.search_students(search_type, keyword)
     if results:
-        system.student_manager.display_all_students(show_gpa=False)
+        print("\n" + "="*100)
+        print("{:<10} {:<25} {:<10} {:<15} {:<15}".format(
+            "MSSV", "Họ tên", "Giới tính", "Khóa học", "Khoa viện"))
+        print("="*100)
+        for student in results:
+            print("{:<10} {:<25} {:<10} {:<15} {:<15}".format(
+                student.student_id, student.name, student.gender,
+                student.course, student.faculty))
+        print("="*100)
 
 def handle_view_gpa(system):
     print("\n=== XEM ĐIỂM TRUNG BÌNH (GPA) VÀ XẾP LOẠI ===")
@@ -167,6 +176,12 @@ def handle_add_score(system):
     if not system.student_manager.find_student_by_id(student_id):
         print("Không tìm thấy sinh viên!")
         return
+    
+    # Kiểm tra mã học phần có tồn tại không
+    subject = next((s for s in system.subject_manager.subjects if s.subject_code == subject_code), None)
+    if not subject:
+        print("Mã học phần không tồn tại!")
+        return
         
     attendance_str = input("Nhập điểm chuyên cần: ").strip()
     midterm_str = input("Nhập điểm giữa kỳ: ").strip()
@@ -197,6 +212,19 @@ def handle_add_score(system):
     }
     system.score_manager.add_score(score_record)
 
+    # Cập nhật điểm và tính lại GPA cho sinh viên
+    student = system.student_manager.find_student_by_id(student_id)
+    if student:
+        student.scores = {}
+        for score_data in system.score_manager.scores:
+            if score_data['student_id'] == student_id:
+                subj_code = score_data['subject_code']
+                score = score_data['total_score']
+                student.add_score(subj_code, score)
+        student.calculate_gpa(system)
+        print(f"GPA mới của sinh viên {student.student_id}: {student.gpa:.2f}")
+        print(f"Xếp loại mới: {student.grade}")
+
 def handle_edit_score(system):
     print("\n=== SỬA ĐIỂM ===")
     student_id = input("Nhập MSSV: ").strip()
@@ -205,7 +233,13 @@ def handle_edit_score(system):
     if not system.student_manager.find_student_by_id(student_id):
         print("Không tìm thấy sinh viên!")
         return
-        
+    
+    # Kiểm tra mã học phần có tồn tại không
+    subject = next((s for s in system.subject_manager.subjects if s.subject_code == subject_code), None)
+    if not subject:
+        print("Mã học phần không tồn tại!")
+        return
+    
     new_scores = {}
     attendance_str = input("Điểm chuyên cần mới (ấn Enter để bỏ qua): ").strip()
     if attendance_str:
@@ -254,6 +288,11 @@ def handle_view_scores(system):
         system.score_manager.view_student_scores(student_id, system.student_manager.students)
     elif view_choice == '2':
         subject_code = input("Nhập mã học phần: ").strip()
+        # Kiểm tra mã học phần có tồn tại không
+        subject = next((s for s in system.subject_manager.subjects if s.subject_code == subject_code), None)
+        if not subject:
+            print("Mã học phần không tồn tại!")
+            return
         system.score_manager.view_subject_scores(subject_code, system.student_manager.students)
     else:
         print("Lựa chọn không hợp lệ!")
@@ -280,30 +319,28 @@ def run_subject_management(system):
 def handle_add_subject(system):
     print("\n=== THÊM MÔN HỌC MỚI ===")
     subject_code = input("Nhập mã môn học: ").strip()
-    is_valid, message = system.subject_manager.validate_subject_code(subject_code)
+    is_valid, message = validate_subject_code(subject_code, existing_subjects=system.subject_manager.subjects)
     if not is_valid:
         print(message)
         return
-        
+
     subject_name = input("Nhập tên môn học: ").strip()
-    is_valid, message = system.subject_manager.validate_subject_name(subject_name)
+    is_valid, message = validate_subject_name(subject_name)
     if not is_valid:
         print(message)
         return
-        
+
     while True:
         credits_str = input("Nhập số tín chỉ: ").strip()
-        try:
+        is_valid, message = validate_credits(credits_str)
+        if is_valid:
             credits = int(credits_str)
-            if credits > 0:
-                break
-            else:
-                print("Số tín chỉ phải là số nguyên dương.")
-        except ValueError:
-            print("Vui lòng nhập một số nguyên hợp lệ.")
-            
+            break
+        else:
+            print(message)
+
     subject = Subject(subject_code, subject_name, credits)
-    system.subject_manager.add_subject(subject)
+    system.add_subject(subject)
 
 def handle_edit_subject(system):
     print("\n=== SỬA THÔNG TIN MÔN HỌC ===")
@@ -332,4 +369,5 @@ def handle_edit_subject(system):
 def handle_delete_subject(system):
     print("\n=== XÓA MÔN HỌC ===")
     subject_code_to_delete = input("Nhập mã môn học cần xóa: ").strip()
-    system.subject_manager.delete_subject(subject_code_to_delete)
+    if system.subject_manager.delete_subject(subject_code_to_delete):
+        system.score_manager.delete_scores_by_subject(subject_code_to_delete)

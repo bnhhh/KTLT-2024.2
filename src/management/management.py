@@ -3,6 +3,7 @@ from managers.score_manager import ScoreManager
 from managers.subject_manager import SubjectManager
 from management.menu_handler import run_student_management, run_score_management, run_subject_management
 from utils.menu_utils import MenuHandler
+from utils.validation_utils import validate_student_id, validate_subject_code, validate_subject_name, validate_credits
 
 class StudentManagementSystem:
     def __init__(self):
@@ -43,7 +44,7 @@ class StudentManagementSystem:
 
     def add_student(self, student):
         """Thêm sinh viên mới"""
-        is_valid_id, message = self.student_manager.validate_student_id(student.student_id)
+        is_valid_id, message = validate_student_id(student.student_id, existing_students=self.student_manager.students)
         if not is_valid_id:
             print(message)
             return False
@@ -55,3 +56,14 @@ class StudentManagementSystem:
     def edit_student(self, student_id, new_info):
         """Sửa thông tin sinh viên"""
         return self.student_manager.edit_student(student_id, new_info)
+
+    def add_subject(self, subject):
+        """Thêm môn học mới"""
+        is_valid_code, code_message = validate_subject_code(subject.subject_code, existing_subjects=self.subject_manager.subjects)
+        if not is_valid_code:
+            print(code_message)
+            return False
+        if self.subject_manager.add_subject(subject):
+            print("✓ Thêm môn học thành công!")
+            return True
+        return False

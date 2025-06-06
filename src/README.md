@@ -1,137 +1,135 @@
-# Hệ Thống Quản Lý Sinh Viên và Điểm Số
+# Hệ Thống Quản Lý Sinh Viên
 
-Hệ thống quản lý thông tin sinh viên, môn học và điểm số với giao diện dòng lệnh.
+## Mô tả
+Đây là hệ thống quản lý sinh viên sử dụng Python, lưu trữ dữ liệu bằng file Excel. Hệ thống hỗ trợ quản lý sinh viên, môn học, điểm số, tính GPA, xếp loại, và các chức năng tìm kiếm, sắp xếp, thống kê.
 
-## Tính Năng Chính
+## Tính năng chính
 
-### Quản Lý Sinh Viên
-- Thêm, sửa, xóa thông tin sinh viên
-- Tìm kiếm sinh viên theo nhiều tiêu chí (MSSV, tên, lớp, khoa)
-- Hiển thị danh sách sinh viên
-- Sắp xếp sinh viên theo tên, GPA, MSSV
-- Xem thông tin chi tiết của sinh viên
+- **Quản lý sinh viên:** Thêm, sửa, xóa, tìm kiếm, sắp xếp, hiển thị danh sách sinh viên.
+- **Quản lý môn học:** Thêm, sửa, xóa, tìm kiếm, hiển thị danh sách môn học.
+- **Quản lý điểm số:** Nhập, sửa, xóa điểm; xem điểm sinh viên, xem điểm theo môn; tự động tính GPA và xếp loại.
+- **Tìm kiếm, sắp xếp:** Tìm kiếm sinh viên theo MSSV, tên, lớp, khoa; sắp xếp theo tên, GPA, MSSV.
+- **Kiểm tra hợp lệ dữ liệu:** Kiểm tra đầu vào cho MSSV, mã môn, tín chỉ, điểm số, v.v.
+- **Tự động xóa điểm khi xóa môn học.**
 
-### Quản Lý Điểm Số
-- Nhập điểm cho sinh viên (chuyên cần, giữa kỳ, cuối kỳ)
-- Tính điểm tổng kết và xếp loại
-- Xem bảng điểm của sinh viên
-- Xem bảng điểm của môn học
-- Thống kê điểm số (trung bình, cao nhất, thấp nhất)
+## Yêu cầu hệ thống
 
-### Quản Lý Môn Học
-- Thêm, sửa, xóa thông tin môn học
-- Quản lý số tín chỉ
-- Hiển thị danh sách môn học
+- Python 3.8 trở lên
+- Thư viện: `openpyxl`
 
-## Cấu Trúc Dự Án
+## Cài đặt
+
+1. **Clone repository:**
+   ```bash
+   git clone <repository-url>
+   cd <repository-name>
+   ```
+2. **Cài đặt các thư viện cần thiết:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+## Hướng dẫn sử dụng
+
+1. Chạy file `main.py` để bắt đầu chương trình:
+   ```bash
+   python main.py
+   ```
+2. Làm theo hướng dẫn trên menu để quản lý sinh viên, môn học, điểm số.
+
+## Cấu trúc các file chính và chức năng
+
+- **main.py**: Điểm khởi động chương trình, hiển thị menu chính.
+- **management/management.py**: Lớp trung tâm quản lý toàn bộ hệ thống, điều phối các thao tác giữa sinh viên, môn học, điểm số.
+- **management/menu_handler.py**: Xử lý giao diện dòng lệnh, nhập/xuất dữ liệu từ người dùng, gọi các chức năng thêm/sửa/xóa/tìm kiếm/sắp xếp.
+- **managers/student_manager.py**: Thêm, sửa, xóa, tìm kiếm, sắp xếp sinh viên, hiển thị danh sách sinh viên.
+- **managers/subject_manager.py**: Thêm, sửa, xóa, tìm kiếm môn học, hiển thị danh sách môn học.
+- **managers/score_manager.py**: Thêm, sửa, xóa điểm, xem điểm sinh viên, xem điểm theo môn, xóa điểm khi xóa môn học.
+- **core_types/student.py**: Định nghĩa đối tượng Sinh viên, các phương thức tính GPA, xếp loại, chuyển đổi dữ liệu.
+- **core_types/subject.py**: Định nghĩa đối tượng Môn học, chuyển đổi dữ liệu.
+- **utils/validation_utils.py**: Kiểm tra hợp lệ MSSV, mã môn, tín chỉ, tên, ngày sinh, ...
+- **utils/score_utils.py**: Tính điểm tổng kết, GPA, xếp loại, kiểm tra hợp lệ điểm số.
+- **utils/file_utils.py**: Đọc và ghi dữ liệu từ/đến file Excel.
+- **utils/menu_utils.py**: Hỗ trợ hiển thị menu, xử lý lựa chọn menu.
+
+## Cấu trúc chương trình
 
 ```
 src/
-├── core_types/           # Các lớp cơ bản
-│   ├── student.py       # Lớp Sinh viên
-│   └── subject.py       # Lớp Môn học
-├── managers/            # Quản lý dữ liệu
+├── core_types/           # Các lớp đối tượng cơ bản (Sinh viên, Môn học)
+│   ├── student.py
+│   └── subject.py
+├── managers/             # Quản lý dữ liệu sinh viên, môn học, điểm số
 │   ├── student_manager.py
 │   ├── subject_manager.py
 │   └── score_manager.py
-├── utils/              # Tiện ích
-│   ├── file_utils.py   # Xử lý file Excel
-│   ├── menu_utils.py   # Xử lý menu
-│   ├── score_utils.py  # Tính toán điểm
-│   └── validation_utils.py # Kiểm tra dữ liệu
-├── management/         # Xử lý giao diện
-│   ├── management.py   # Quản lý chính
-│   └── menu_handler.py # Xử lý menu
-├── main.py            # Điểm khởi chạy chương trình
-└── requirements.txt   # Các thư viện cần thiết
+├── utils/                # Các hàm tiện ích, kiểm tra, tính toán, xử lý file, menu
+│   ├── file_utils.py
+│   ├── menu_utils.py
+│   ├── score_utils.py
+│   └── validation_utils.py
+├── management/           # Xử lý giao diện, menu, điều phối hệ thống
+│   ├── management.py
+│   └── menu_handler.py
+├── main.py               # Điểm khởi động chương trình
+└── requirements.txt      # Thư viện cần thiết
 ```
 
-## Yêu Cầu Hệ Thống
+## Quy tắc dữ liệu
 
-- Python 3.8 trở lên
-- Thư viện: openpyxl
+- **Sinh viên:**
+  - MSSV: 8 chữ số, duy nhất.
+  - Họ tên: Chỉ chứa chữ cái và dấu.
+  - Ngày sinh: Định dạng dd/mm/yyyy.
+  - Giới tính: Nam/Nữ.
+  - Các trường khác: Không được để trống.
 
-## Cài Đặt
+- **Môn học:**
+  - Mã môn học: Không được trùng.
+  - Tên môn học: Không được để trống.
+  - Số tín chỉ: Số nguyên dương.
 
-1. Clone repository:
-```bash
-git clone <repository-url>
-cd <repository-name>
-```
+- **Điểm số:**
+  - Điểm chuyên cần, giữa kỳ, cuối kỳ: 0-10.
+  - Điểm tổng kết = (Điểm chuyên cần * 0.4 + Điểm giữa kỳ * 0.6) * 0.5 + Điểm cuối kỳ * 0.5
 
-2. Cài đặt các thư viện cần thiết:
-```bash
-pip install -r requirements.txt
-```
-
-## Sử Dụng
-
-1. Chạy chương trình:
-```bash
-python main.py
-```
-
-2. Làm theo hướng dẫn trên menu
-
-## Quy Tắc Dữ Liệu
-
-### Thông Tin Sinh Viên
-- MSSV: 8 chữ số
-- Họ tên: Chỉ chứa chữ cái và dấu
-- Ngày sinh: Định dạng dd/mm/yyyy
-- Giới tính: Nam/Nữ
-- Các trường khác: Không được để trống
-
-### Thông Tin Môn Học
-- Mã môn học: Không được trùng
-- Tên môn học: Không được để trống
-- Số tín chỉ: Số nguyên dương
-
-### Tính Điểm
-- Điểm chuyên cần: 0-10
-- Điểm giữa kỳ: 0-10
-- Điểm cuối kỳ: 0-10
-- Điểm tổng kết = (Điểm chuyên cần * 0.4 + Điểm giữa kỳ * 0.6) * 0.5 + Điểm cuối kỳ * 0.5
-
-### Xếp Loại
-- A+: ≥ 9.5
-- A: ≥ 8.5
-- B+: ≥ 8.0
-- B: ≥ 7.0
-- C+: ≥ 6.5
-- C: ≥ 5.5
-- D+: ≥ 5.0
-- D: ≥ 4.0
-- F: < 4.0
+- **Xếp loại theo GPA:**
+  - A+: ≥ 9.5
+  - A: ≥ 8.5
+  - B+: ≥ 8.0
+  - B: ≥ 7.0
+  - C+: ≥ 6.5
+  - C: ≥ 5.5
+  - D+: ≥ 5.0
+  - D: ≥ 4.0
+  - F: < 4.0
 
 ## Lưu ý
 
 - Dữ liệu được lưu trong các file Excel:
-  - students.xlsx: Thông tin sinh viên
-  - scores.xlsx: Điểm số
-  - subjects.xlsx: Thông tin môn học
-- Cần đảm bảo quyền truy cập file
-- Nên sao lưu dữ liệu thường xuyên
-- Đảm bảo các file Excel không bị mở bởi chương trình khác khi chạy
+  - `students.xlsx`: Thông tin sinh viên
+  - `subjects.xlsx`: Thông tin môn học
+  - `scores.xlsx`: Điểm số
+- Khi xóa môn học sẽ tự động xóa toàn bộ điểm của môn đó.
+- Đảm bảo các file Excel không bị mở bởi chương trình khác khi chạy.
+- Nên sao lưu dữ liệu thường xuyên.
 
-## Hạn Chế Hiện Tại
+## Hạn chế hiện tại
 
-- Chưa có tính năng sao lưu/khôi phục dữ liệu
-- Chưa hỗ trợ nhiều người dùng
-- Chưa có báo cáo thống kê chi tiết
-- Chưa có tính năng xuất báo cáo PDF
+- Chưa có tính năng sao lưu/khôi phục dữ liệu tự động.
+- Chưa hỗ trợ nhiều người dùng hoặc phân quyền truy cập.
+- Chưa có giao diện đồ họa (GUI), chỉ sử dụng dòng lệnh.
+- Chưa có báo cáo thống kê chi tiết hoặc xuất báo cáo PDF.
+- Chưa tích hợp gửi email thông báo.
+- Chưa chuyển sang sử dụng cơ sở dữ liệu thực thụ (chỉ dùng file Excel).
 
-## Kế Hoạch Phát Triển
+## Kế hoạch phát triển
 
-- [ ] Thêm tính năng sao lưu/khôi phục dữ liệu
-- [ ] Thêm giao diện đồ họa
-- [ ] Thêm báo cáo thống kê chi tiết
-- [ ] Thêm tính năng xuất báo cáo PDF
-- [ ] Thêm tính năng quản lý người dùng
-- [ ] Chuyển sang cơ sở dữ liệu
-- [ ] Thêm tính năng phân quyền
-- [ ] Thêm tính năng gửi email thông báo
+- [ ] Thêm tính năng sao lưu/khôi phục dữ liệu tự động.
+- [ ] Thêm giao diện đồ họa (GUI).
+- [ ] Thêm báo cáo thống kê chi tiết, xuất báo cáo PDF.
+- [ ] Thêm tính năng gửi email thông báo.
+- [ ] Hỗ trợ nhiều người dùng, phân quyền truy cập.
+- [ ] Chuyển sang sử dụng cơ sở dữ liệu (MySQL, SQLite, ...).
+- [ ] Tối ưu hiệu năng và bảo mật dữ liệu.
 
-## Đóng Góp
-
-Mọi đóng góp đều được hoan nghênh. Vui lòng tạo issue hoặc pull request để đóng góp.
