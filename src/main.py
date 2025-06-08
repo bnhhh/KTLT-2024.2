@@ -1,9 +1,32 @@
+"""
+Module chính của hệ thống quản lý sinh viên.
+
+Module này có các trách nhiệm chính:
+1. Khởi tạo hệ thống quản lý sinh viên
+2. Hiển thị và xử lý menu chính
+3. Điều phối các chức năng quản lý sinh viên
+4. Xử lý các trường hợp lỗi và ngoại lệ
+
+"""
+
 from management.management import StudentManagementSystem
-from utils.menu_utils import MenuHandler
 from management.menu_handler import run_student_management, run_score_management, run_subject_management
+from utils.menu_utils import MenuHandler
 
 def main():
-    """Khởi chạy chương trình quản lý sinh viên"""
+    """
+    Hàm chính của chương trình.
+    
+    Chức năng:
+    1. Khởi tạo hệ thống quản lý sinh viên
+    2. Định nghĩa các tùy chọn menu chính
+    3. Chạy menu thông qua MenuHandler
+    4. Xử lý các trường hợp lỗi và ngoại lệ
+    
+    Xử lý ngoại lệ:
+    - KeyboardInterrupt: Khi người dùng nhấn Ctrl+C
+    - Exception: Các lỗi không mong muốn khác
+    """
     try:
         # Khởi tạo hệ thống
         system = StudentManagementSystem()

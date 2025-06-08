@@ -26,10 +26,6 @@ class Student:
         self.grade = get_grade(self.gpa)
         return self.gpa
 
-    def get_grade(self, score):
-        """Lấy xếp loại dựa trên điểm số"""
-        return get_grade(score)
-
     def to_dict(self):
         return {
             'student_id': self.student_id,

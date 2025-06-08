@@ -1,4 +1,3 @@
-import openpyxl
 from utils.file_utils import ExcelFileHandler
 from utils.score_utils import validate_score, calculate_final_score, get_grade
 
@@ -6,12 +5,6 @@ class ScoreManager:
     def __init__(self, scores_data=None, scores_file="scores.xlsx"):
         self.scores = scores_data if scores_data is not None else []
         self.scores_file = scores_file
-
-    def validate_subject_code(self, subject_code):
-        """Validate mã học phần"""
-        if not subject_code.strip():
-            return False, "Mã học phần không được để trống"
-        return True, ""
 
     def find_score_record(self, student_id, subject_code):
         """Tìm kiếm bản ghi điểm"""

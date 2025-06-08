@@ -44,7 +44,6 @@ class StudentManager:
             
         # Nếu tất cả validation đều thành công, thêm sinh viên
         self.students.append(student)
-        print("✓ Thêm sinh viên thành công!")
         return True
 
     def edit_student(self, student_id, new_info):
