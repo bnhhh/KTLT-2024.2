@@ -45,7 +45,7 @@
 - **managers/student_manager.py**: Thêm, sửa, xóa, tìm kiếm, sắp xếp sinh viên, hiển thị danh sách sinh viên.
 - **managers/subject_manager.py**: Thêm, sửa, xóa, tìm kiếm môn học, hiển thị danh sách môn học.
 - **managers/score_manager.py**: Thêm, sửa, xóa điểm, xem điểm sinh viên, xem điểm theo môn, xóa điểm khi xóa môn học.
-- **core_types/student.py**: Định nghĩa đối tượng Sinh viên, các phương thức tính GPA, xếp loại, chuyển đổi dữ liệu.
+- **core_types/student.py**: Định nghĩa đối tượng Sinh viên, các phương thức tính GPA, chuyển đổi dữ liệu.
 - **core_types/subject.py**: Định nghĩa đối tượng Môn học, chuyển đổi dữ liệu.
 - **utils/validation_utils.py**: Kiểm tra hợp lệ MSSV, mã môn, tín chỉ, tên, ngày sinh, ...
 - **utils/score_utils.py**: Tính điểm tổng kết, GPA, xếp loại, kiểm tra hợp lệ điểm số.

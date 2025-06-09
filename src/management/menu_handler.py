@@ -20,10 +20,10 @@ def edit_student_info(student):
     """
     Chỉnh sửa thông tin sinh viên thông qua nhập liệu từ người dùng.
     
-    Args:
+    Tham số đầu vào:
         student (Student): Đối tượng sinh viên cần chỉnh sửa
         
-    Returns:
+    Trả về:
         bool: True nếu chỉnh sửa thành công, False nếu thất bại
     """
     print("\n=== CHỈNH SỬA THÔNG TIN SINH VIÊN ===")
@@ -64,7 +64,7 @@ def run_student_management(system):
     """
     Chạy menu quản lý sinh viên.
     
-    Args:
+    Tham số đầu vào:
         system (StudentManagementSystem): Hệ thống quản lý sinh viên
     """
     options = {
@@ -94,7 +94,7 @@ def handle_add_student(system):
     """
     Thêm sinh viên mới.
     
-    Args:
+    Tham số đầu vào:
         system (StudentManagementSystem): Hệ thống quản lý sinh viên
     """
     print("\n=== THÊM SINH VIÊN MỚI ===")
@@ -114,7 +114,7 @@ def handle_edit_student(system):
     """
     Sửa thông tin sinh viên.
     
-    Args:
+    Tham số đầu vào:
         system (StudentManagementSystem): Hệ thống quản lý sinh viên
     """
     print("\n=== SỬA THÔNG TIN SINH VIÊN ===")
@@ -131,7 +131,7 @@ def handle_delete_student(system):
     """
     Xóa sinh viên.
     
-    Args:
+    Tham số đầu vào:
         system (StudentManagementSystem): Hệ thống quản lý sinh viên
     """
     print("\n=== XÓA SINH VIÊN ===")
@@ -142,7 +142,7 @@ def handle_search_student(system):
     """
     Tìm kiếm sinh viên.
     
-    Args:
+    Tham số đầu vào:
         system (StudentManagementSystem): Hệ thống quản lý sinh viên
     """
     print("\n=== TÌM KIẾM SINH VIÊN ===")
@@ -169,7 +169,7 @@ def handle_view_gpa(system):
     """
     Xem điểm trung bình (GPA) và xếp loại.
     
-    Args:
+    Tham số đầu vào:
         system (StudentManagementSystem): Hệ thống quản lý sinh viên
     """
     print("\n=== XEM ĐIỂM TRUNG BÌNH (GPA) VÀ XẾP LOẠI ===")
@@ -188,7 +188,7 @@ def handle_sort_students(system):
     """
     Sắp xếp danh sách sinh viên.
     
-    Args:
+    Tham số đầu vào:
         system (StudentManagementSystem): Hệ thống quản lý sinh viên
     """
     print("\n=== SẮP XẾP DANH SÁCH SINH VIÊN ===")
@@ -215,7 +215,7 @@ def run_score_management(system):
     """
     Chạy menu quản lý điểm số.
     
-    Args:
+    Tham số đầu vào:
         system (StudentManagementSystem): Hệ thống quản lý sinh viên
     """
     options = {
@@ -239,7 +239,7 @@ def handle_add_score(system):
     """
     Nhập điểm cho sinh viên.
     
-    Args:
+    Tham số đầu vào:
         system (StudentManagementSystem): Hệ thống quản lý sinh viên
     """
     print("\n=== NHẬP ĐIỂM ===")
@@ -302,7 +302,7 @@ def handle_edit_score(system):
     """
     Sửa điểm của sinh viên.
     
-    Args:
+    Tham số đầu vào:
         system (StudentManagementSystem): Hệ thống quản lý sinh viên
     """
     print("\n=== SỬA ĐIỂM ===")
@@ -357,7 +357,7 @@ def handle_delete_score(system):
     """
     Xóa điểm của sinh viên.
 
-    Args:
+    Tham số đầu vào:
         system (StudentManagementSystem): Hệ thống quản lý sinh viên
     """
     print("\n=== XÓA ĐIỂM ===")
@@ -369,7 +369,7 @@ def handle_view_scores(system):
     """
     Xem điểm số của sinh viên.
 
-    Args:
+    Tham số đầu vào:
         system (StudentManagementSystem): Hệ thống quản lý sinh viên
     """
     print("\n=== XEM ĐIỂM SỐ ===")
@@ -395,7 +395,7 @@ def run_subject_management(system):
     """
     Chạy menu quản lý môn học.
     
-    Args:
+    Tham số đầu vào:
         system (StudentManagementSystem): Hệ thống quản lý sinh viên
     """
     options = {
@@ -421,7 +421,7 @@ def handle_add_subject(system):
     """
     Thêm môn học mới.
     
-    Args:
+    Tham số đầu vào:
         system (StudentManagementSystem): Hệ thống quản lý sinh viên
     """
     print("\n=== THÊM MÔN HỌC MỚI ===")
@@ -451,7 +451,7 @@ def handle_edit_subject(system):
     """
     Sửa thông tin môn học.
     
-    Args:
+    Tham số đầu vào:
         system (StudentManagementSystem): Hệ thống quản lý sinh viên
     """
     print("\n=== SỬA THÔNG TIN MÔN HỌC ===")
@@ -492,7 +492,7 @@ def handle_delete_subject(system):
     """
     Xóa môn học.
     
-    Args:
+    Tham số đầu vào:
         system (StudentManagementSystem): Hệ thống quản lý sinh viên
     """
     print("\n=== XÓA MÔN HỌC ===")
@@ -504,7 +504,7 @@ def handle_search_subject(system):
     """
     Tìm kiếm môn học.
 
-    Args:
+    Tham số đầu vào:
         system (StudentManagementSystem): Hệ thống quản lý sinh viên
     """
     print("\n=== TÌM KIẾM MÔN HỌC ===")

@@ -27,6 +27,11 @@ class Student:
         return self.gpa
 
     def to_dict(self):
+        """
+        Chuyển đổi đối tượng sinh viên sang định dạng từ điển
+        Returns:
+            dict: từ điển chứa thông tin sinh viên
+        """
         return {
             'student_id': self.student_id,
             'name': self.name,
@@ -40,6 +45,13 @@ class Student:
 
     @classmethod
     def from_dict(cls, data):
+        """
+        Tạo đối tượng Student từ dữ liệu từ điển
+        Tham số:
+            data (dict): Từ điển chứa thông tin sinh viên
+        Trả về:
+            Student: Một đối tượng Student mới được khởi tạo
+        """
         return cls(
             data['student_id'],
             data['name'],

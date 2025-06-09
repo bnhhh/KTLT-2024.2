@@ -71,7 +71,7 @@ class StudentManagementSystem:
         """
         Tạo dictionary lưu số tín chỉ của từng môn học.
         
-        Returns:
+        Trả về:
             dict: Dictionary với key là mã môn học, value là số tín chỉ
         """
         credits = {}
@@ -97,10 +97,10 @@ class StudentManagementSystem:
         """
         Thêm sinh viên mới vào hệ thống.
         
-        Args:
+        Tham số đầu vào:
             student: Đối tượng Student cần thêm
             
-        Returns:
+        Trả về:
             bool: True nếu thêm thành công, False nếu thất bại
         """
         is_valid_id, message = validate_student_id(student.student_id, existing_students=self.student_manager.students)
@@ -116,11 +116,11 @@ class StudentManagementSystem:
         """
         Sửa thông tin sinh viên.
         
-        Args:
+        Tham số đầu vào:
             student_id (str): MSSV của sinh viên cần sửa
             new_info (dict): Dictionary chứa thông tin mới
             
-        Returns:
+        Trả về:
             bool: True nếu sửa thành công, False nếu thất bại
         """
         return self.student_manager.edit_student(student_id, new_info)
@@ -129,10 +129,10 @@ class StudentManagementSystem:
         """
         Thêm môn học mới vào hệ thống.
         
-        Args:
+        Tham số đầu vào:
             subject: Đối tượng Subject cần thêm
             
-        Returns:
+        Trả về:
             bool: True nếu thêm thành công, False nếu thất bại
         """
         is_valid_code, code_message = validate_subject_code(subject.subject_code, existing_subjects=self.subject_manager.subjects)
